@@ -1,0 +1,112 @@
+<!--<?xml version="1.0" encoding="UTF-8" ?>-->
+<!--<!DOCTYPE mapper-->
+<!--PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"-->
+<!--"http://mybatis.org/dtd/mybatis-3-mapper.dtd">-->
+<!--<mapper namespace="com.ruoyi.mapper.SaveTemperMapper">-->
+<!--    -->
+<!--    <resultMap type="FacDeviceMetaTemper" id="FacDeviceMetaTemperResult">-->
+<!--        <result property="temperId"    column="temper_id"    />-->
+<!--        <result property="temp1"    column="Temp1"    />-->
+<!--        <result property="temp2"    column="Temp2"    />-->
+<!--        <result property="temp3"    column="Temp3"    />-->
+<!--        <result property="temp4"    column="Temp4"    />-->
+<!--        <result property="acquisitionTime"    column="acquisition_time"    />-->
+<!--        <result property="deviceId"    column="device_id"    />-->
+<!--        <result property="electrolyticCellId"    column="electrolytic_cell_id"    />-->
+<!--        <result property="workshopId"    column="workshop_id"    />-->
+<!--        <result property="workshopName"    column="workshop_name"    />-->
+<!--        <result property="electrolyticCellName"    column="electrolytic_cell_name"    />-->
+<!--        <result property="deviceName"    column="device_name"    />-->
+<!--        <result property="factoryId"    column="factory_id"    />-->
+<!--        <result property="factoryName"    column="factory_name"    />-->
+<!--    </resultMap>-->
+
+<!--&lt;!&ndash;    <sql id="selectFacDeviceMetaTemperVo">&ndash;&gt;-->
+<!--&lt;!&ndash;        select temper_id, Temp1, Temp2, Temp3, Temp4, acquisition_time, device_id, electrolytic_cell_id, workshop_id, workshop_name, electrolytic_cell_name, device_name, factory_id, factory_name from fac_device_meta_temper&ndash;&gt;-->
+<!--&lt;!&ndash;    </sql>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <select id="selectFacDeviceMetaTemperList" parameterType="FacDeviceMetaTemper" resultMap="FacDeviceMetaTemperResult">&ndash;&gt;-->
+<!--&lt;!&ndash;        <include refid="selectFacDeviceMetaTemperVo"/>&ndash;&gt;-->
+<!--&lt;!&ndash;        <where>  &ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="params.beginTemp1 != null and params.beginTemp1 != '' and params.endTemp1 != null and params.endTemp1 != ''"> and Temp1 between #{params.beginTemp1} and #{params.endTemp1}</if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="params.beginTemp2 != null and params.beginTemp2 != '' and params.endTemp2 != null and params.endTemp2 != ''"> and Temp2 between #{params.beginTemp2} and #{params.endTemp2}</if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="params.beginTemp3 != null and params.beginTemp3 != '' and params.endTemp3 != null and params.endTemp3 != ''"> and Temp3 between #{params.beginTemp3} and #{params.endTemp3}</if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="params.beginTemp4 != null and params.beginTemp4 != '' and params.endTemp4 != null and params.endTemp4 != ''"> and Temp4 between #{params.beginTemp4} and #{params.endTemp4}</if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="params.beginAcquisitionTime != null and params.beginAcquisitionTime != '' and params.endAcquisitionTime != null and params.endAcquisitionTime != ''"> and acquisition_time between #{params.beginAcquisitionTime} and #{params.endAcquisitionTime}</if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="workshopName != null  and workshopName != ''"> and workshop_name like concat('%', #{workshopName}, '%')</if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="electrolyticCellName != null  and electrolyticCellName != ''"> and electrolytic_cell_name like concat('%', #{electrolyticCellName}, '%')</if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="deviceName != null  and deviceName != ''"> and device_name like concat('%', #{deviceName}, '%')</if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="factoryName != null  and factoryName != ''"> and factory_name like concat('%', #{factoryName}, '%')</if>&ndash;&gt;-->
+<!--&lt;!&ndash;        </where>&ndash;&gt;-->
+<!--&lt;!&ndash;    </select>&ndash;&gt;-->
+<!--&lt;!&ndash;    &ndash;&gt;-->
+<!--&lt;!&ndash;    <select id="selectFacDeviceMetaTemperByTemperId" parameterType="Long" resultMap="FacDeviceMetaTemperResult">&ndash;&gt;-->
+<!--&lt;!&ndash;        <include refid="selectFacDeviceMetaTemperVo"/>&ndash;&gt;-->
+<!--&lt;!&ndash;        where temper_id = #{temperId}&ndash;&gt;-->
+<!--&lt;!&ndash;    </select>&ndash;&gt;-->
+<!--        -->
+<!--    <insert id="addTemperValue" parameterType="FacDeviceMetaTemper" useGeneratedKeys="true" keyProperty="temperId">-->
+<!--        insert into fac_device_meta_temper-->
+<!--        <trim prefix="(" suffix=")" suffixOverrides=",">-->
+<!--            <if test="temp1 != null">Temp1,</if>-->
+<!--            <if test="temp2 != null">Temp2,</if>-->
+<!--            <if test="temp3 != null">Temp3,</if>-->
+<!--            <if test="temp4 != null">Temp4,</if>-->
+<!--            <if test="acquisitionTime != null">acquisition_time,</if>-->
+<!--            <if test="deviceId != null">device_id,</if>-->
+<!--            <if test="electrolyticCellId != null">electrolytic_cell_id,</if>-->
+<!--            <if test="workshopId != null">workshop_id,</if>-->
+<!--            <if test="workshopName != null">workshop_name,</if>-->
+<!--            <if test="electrolyticCellName != null">electrolytic_cell_name,</if>-->
+<!--            <if test="deviceName != null">device_name,</if>-->
+<!--            <if test="factoryId != null">factory_id,</if>-->
+<!--            <if test="factoryName != null">factory_name,</if>-->
+<!--         </trim>-->
+<!--        <trim prefix="values (" suffix=")" suffixOverrides=",">-->
+<!--            <if test="temp1 != null">#{temp1},</if>-->
+<!--            <if test="temp2 != null">#{temp2},</if>-->
+<!--            <if test="temp3 != null">#{temp3},</if>-->
+<!--            <if test="temp4 != null">#{temp4},</if>-->
+<!--            <if test="acquisitionTime != null">#{acquisitionTime},</if>-->
+<!--            <if test="deviceId != null">#{deviceId},</if>-->
+<!--            <if test="electrolyticCellId != null">#{electrolyticCellId},</if>-->
+<!--            <if test="workshopId != null">#{workshopId},</if>-->
+<!--            <if test="workshopName != null">#{workshopName},</if>-->
+<!--            <if test="electrolyticCellName != null">#{electrolyticCellName},</if>-->
+<!--            <if test="deviceName != null">#{deviceName},</if>-->
+<!--            <if test="factoryId != null">#{factoryId},</if>-->
+<!--            <if test="factoryName != null">#{factoryName},</if>-->
+<!--         </trim>-->
+<!--    </insert>-->
+
+<!--&lt;!&ndash;    <update id="updateFacDeviceMetaTemper" parameterType="FacDeviceMetaTemper">&ndash;&gt;-->
+<!--&lt;!&ndash;        update fac_device_meta_temper&ndash;&gt;-->
+<!--&lt;!&ndash;        <trim prefix="SET" suffixOverrides=",">&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="temp1 != null">Temp1 = #{temp1},</if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="temp2 != null">Temp2 = #{temp2},</if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="temp3 != null">Temp3 = #{temp3},</if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="temp4 != null">Temp4 = #{temp4},</if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="acquisitionTime != null">acquisition_time = #{acquisitionTime},</if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="deviceId != null">device_id = #{deviceId},</if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="electrolyticCellId != null">electrolytic_cell_id = #{electrolyticCellId},</if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="workshopId != null">workshop_id = #{workshopId},</if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="workshopName != null">workshop_name = #{workshopName},</if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="electrolyticCellName != null">electrolytic_cell_name = #{electrolyticCellName},</if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="deviceName != null">device_name = #{deviceName},</if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="factoryId != null">factory_id = #{factoryId},</if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="factoryName != null">factory_name = #{factoryName},</if>&ndash;&gt;-->
+<!--&lt;!&ndash;        </trim>&ndash;&gt;-->
+<!--&lt;!&ndash;        where temper_id = #{temperId}&ndash;&gt;-->
+<!--&lt;!&ndash;    </update>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <delete id="deleteFacDeviceMetaTemperByTemperId" parameterType="Long">&ndash;&gt;-->
+<!--&lt;!&ndash;        delete from fac_device_meta_temper where temper_id = #{temperId}&ndash;&gt;-->
+<!--&lt;!&ndash;    </delete>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <delete id="deleteFacDeviceMetaTemperByTemperIds" parameterType="String">&ndash;&gt;-->
+<!--&lt;!&ndash;        delete from fac_device_meta_temper where temper_id in &ndash;&gt;-->
+<!--&lt;!&ndash;        <foreach item="temperId" collection="array" open="(" separator="," close=")">&ndash;&gt;-->
+<!--&lt;!&ndash;            #{temperId}&ndash;&gt;-->
+<!--&lt;!&ndash;        </foreach>&ndash;&gt;-->
+<!--&lt;!&ndash;    </delete>&ndash;&gt;-->
+<!--</mapper>-->

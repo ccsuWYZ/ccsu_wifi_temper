@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fac.mapper.FacEndDeviceMapper">
+    
+    <resultMap type="FacEndDevice" id="FacEndDeviceResult">
+        <result property="deviceId"    column="device_id"    />
+        <result property="deviceName"    column="device_name"    />
+        <result property="location"    column="location"    />
+        <result property="electrolyticellId"    column="electrolyticell_id"    />
+        <result property="deviceStatus"    column="device_status"    />
+    </resultMap>
+
+    <resultMap id="FacEndDeviceFacThermocoupleResult" type="FacEndDevice" extends="FacEndDeviceResult">
+        <collection property="facThermocoupleList" notNullColumn="sub_thermocouple_id" javaType="java.util.List" resultMap="FacThermocoupleResult" />
+    </resultMap>
+
+    <resultMap type="FacThermocouple" id="FacThermocoupleResult">
+        <result property="thermocoupleId"    column="sub_thermocouple_id"    />
+        <result property="thermocoupleName"    column="sub_thermocouple_name"    />
+        <result property="thermocoupleLocation"    column="sub_thermocouple_location"    />
+        <result property="endDeviceId"    column="sub_end_device_id"    />
+    </resultMap>
+
+    <sql id="selectFacEndDeviceVo">
+        select device_id, device_name, location, electrolyticell_id, device_status from fac_end_device
+    </sql>
+
+    <select id="selectFacEndDeviceList" parameterType="FacEndDevice" resultMap="FacEndDeviceResult">
+        <include refid="selectFacEndDeviceVo"/>
+        <where>  
+            <if test="deviceName != null  and deviceName != ''"> and device_name like concat('%', #{deviceName}, '%')</if>
+            <if test="location != null  and location != ''"> and location = #{location}</if>
+            <if test="electrolyticellId != null "> and electrolyticell_id = #{electrolyticellId}</if>
+            <if test="deviceStatus != null  and deviceStatus != ''"> and device_status = #{deviceStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectFacEndDeviceByDeviceId" parameterType="String" resultMap="FacEndDeviceFacThermocoupleResult">
+        select a.device_id, a.device_name, a.location, a.electrolyticell_id, a.device_status,
+ b.thermocouple_id as sub_thermocouple_id, b.thermocouple_name as sub_thermocouple_name, b.thermocouple_location as sub_thermocouple_location, b.end_device_id as sub_end_device_id
+        from fac_end_device a
+        left join fac_thermocouple b on b.end_device_id = a.device_id
+        where a.device_id = #{deviceId}
+    </select>
+        
+    <insert id="insertFacEndDevice" parameterType="FacEndDevice">
+        insert into fac_end_device
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deviceId != null">device_id,</if>
+            <if test="deviceName != null">device_name,</if>
+            <if test="location != null">location,</if>
+            <if test="electrolyticellId != null">electrolyticell_id,</if>
+            <if test="deviceStatus != null">device_status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deviceId != null">#{deviceId},</if>
+            <if test="deviceName != null">#{deviceName},</if>
+            <if test="location != null">#{location},</if>
+            <if test="electrolyticellId != null">#{electrolyticellId},</if>
+            <if test="deviceStatus != null">#{deviceStatus},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFacEndDevice" parameterType="FacEndDevice">
+        update fac_end_device
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deviceName != null">device_name = #{deviceName},</if>
+            <if test="location != null">location = #{location},</if>
+            <if test="electrolyticellId != null">electrolyticell_id = #{electrolyticellId},</if>
+            <if test="deviceStatus != null">device_status = #{deviceStatus},</if>
+        </trim>
+        where device_id = #{deviceId}
+    </update>
+
+    <delete id="deleteFacEndDeviceByDeviceId" parameterType="String">
+        delete from fac_end_device where device_id = #{deviceId}
+    </delete>
+
+    <delete id="deleteFacEndDeviceByDeviceIds" parameterType="String">
+        delete from fac_end_device where device_id in 
+        <foreach item="deviceId" collection="array" open="(" separator="," close=")">
+            #{deviceId}
+        </foreach>
+    </delete>
+    
+    <delete id="deleteFacThermocoupleByEndDeviceIds" parameterType="String">
+        delete from fac_thermocouple where end_device_id in 
+        <foreach item="endDeviceId" collection="array" open="(" separator="," close=")">
+            #{endDeviceId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteFacThermocoupleByEndDeviceId" parameterType="String">
+        delete from fac_thermocouple where end_device_id = #{endDeviceId}
+    </delete>
+
+    <insert id="batchFacThermocouple">
+        insert into fac_thermocouple( thermocouple_id, thermocouple_name, thermocouple_location, end_device_id) values
+		<foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.thermocoupleId}, #{item.thermocoupleName}, #{item.thermocoupleLocation}, #{item.endDeviceId})
+        </foreach>
+    </insert>
+</mapper>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fac.mapper.FacElectrolyticCellMapper">
+    
+    <resultMap type="FacElectrolyticCell" id="FacElectrolyticCellResult">
+        <result property="electrolyticcellId"    column="electrolyticCell_id"    />
+        <result property="electrolyticcellName"    column="electrolyticCell_name"    />
+        <result property="electrolyticcellLocation"    column="electrolyticCell_location"    />
+        <result property="workshopId"    column="workshop_id"    />
+    </resultMap>
+
+    <resultMap id="FacElectrolyticCellFacEndDeviceResult" type="FacElectrolyticCell" extends="FacElectrolyticCellResult">
+        <collection property="facEndDeviceList" notNullColumn="sub_device_id" javaType="java.util.List" resultMap="FacEndDeviceResult" />
+    </resultMap>
+
+    <resultMap type="FacEndDevice" id="FacEndDeviceResult">
+        <result property="deviceId"    column="sub_device_id"    />
+        <result property="deviceName"    column="sub_device_name"    />
+        <result property="location"    column="sub_location"    />
+        <result property="electrolyticellId"    column="sub_electrolyticell_id"    />
+        <result property="deviceStatus"    column="sub_device_status"    />
+    </resultMap>
+
+    <sql id="selectFacElectrolyticCellVo">
+        select electrolyticCell_id, electrolyticCell_name, electrolyticCell_location, workshop_id from fac_electrolytic_cell
+    </sql>
+
+    <select id="selectFacElectrolyticCellList" parameterType="FacElectrolyticCell" resultMap="FacElectrolyticCellResult">
+        <include refid="selectFacElectrolyticCellVo"/>
+        <where>  
+            <if test="electrolyticcellName != null  and electrolyticcellName != ''"> and electrolyticCell_name like concat('%', #{electrolyticcellName}, '%')</if>
+            <if test="electrolyticcellLocation != null  and electrolyticcellLocation != ''"> and electrolyticCell_location = #{electrolyticcellLocation}</if>
+            <if test="workshopId != null "> and workshop_id = #{workshopId}</if>
+        </where>
+    </select>
+    
+    <select id="selectFacElectrolyticCellByElectrolyticcellId" parameterType="Long" resultMap="FacElectrolyticCellFacEndDeviceResult">
+        select a.electrolyticCell_id, a.electrolyticCell_name, a.electrolyticCell_location, a.workshop_id,
+ b.device_id as sub_device_id, b.device_name as sub_device_name, b.location as sub_location, b.electrolyticell_id as sub_electrolyticell_id, b.device_status as sub_device_status
+        from fac_electrolytic_cell a
+        left join fac_end_device b on b.electrolyticell_id = a.electrolyticCell_id
+        where a.electrolyticCell_id = #{electrolyticcellId}
+    </select>
+        
+    <insert id="insertFacElectrolyticCell" parameterType="FacElectrolyticCell" useGeneratedKeys="true" keyProperty="electrolyticcellId">
+        insert into fac_electrolytic_cell
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="electrolyticcellName != null">electrolyticCell_name,</if>
+            <if test="electrolyticcellLocation != null">electrolyticCell_location,</if>
+            <if test="workshopId != null">workshop_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="electrolyticcellName != null">#{electrolyticcellName},</if>
+            <if test="electrolyticcellLocation != null">#{electrolyticcellLocation},</if>
+            <if test="workshopId != null">#{workshopId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFacElectrolyticCell" parameterType="FacElectrolyticCell">
+        update fac_electrolytic_cell
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="electrolyticcellName != null">electrolyticCell_name = #{electrolyticcellName},</if>
+            <if test="electrolyticcellLocation != null">electrolyticCell_location = #{electrolyticcellLocation},</if>
+            <if test="workshopId != null">workshop_id = #{workshopId},</if>
+        </trim>
+        where electrolyticCell_id = #{electrolyticcellId}
+    </update>
+
+    <delete id="deleteFacElectrolyticCellByElectrolyticcellId" parameterType="Long">
+        delete from fac_electrolytic_cell where electrolyticCell_id = #{electrolyticcellId}
+    </delete>
+
+    <delete id="deleteFacElectrolyticCellByElectrolyticcellIds" parameterType="String">
+        delete from fac_electrolytic_cell where electrolyticCell_id in 
+        <foreach item="electrolyticcellId" collection="array" open="(" separator="," close=")">
+            #{electrolyticcellId}
+        </foreach>
+    </delete>
+    
+    <delete id="deleteFacEndDeviceByElectrolyticellIds" parameterType="String">
+        delete from fac_end_device where electrolyticell_id in 
+        <foreach item="electrolyticellId" collection="array" open="(" separator="," close=")">
+            #{electrolyticellId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteFacEndDeviceByElectrolyticellId" parameterType="Long">
+        delete from fac_end_device where electrolyticell_id = #{electrolyticellId}
+    </delete>
+
+    <insert id="batchFacEndDevice">
+        insert into fac_end_device( device_id, device_name, location, electrolyticell_id, device_status) values
+		<foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.deviceId}, #{item.deviceName}, #{item.location}, #{item.electrolyticellId}, #{item.deviceStatus})
+        </foreach>
+    </insert>
+</mapper>

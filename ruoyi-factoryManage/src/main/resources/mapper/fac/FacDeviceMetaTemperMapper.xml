@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fac.mapper.FacDeviceMetaTemperMapper">
+    
+    <resultMap type="FacDeviceMetaTemper" id="FacDeviceMetaTemperResult">
+        <result property="temperId"    column="temper_id"    />
+        <result property="temp"    column="Temp"    />
+        <result property="acquisitionTime"    column="acquisition_time"    />
+        <result property="deviceId"    column="device_id"    />
+        <result property="deviceName"    column="device_name"    />
+        <result property="thermocoupleId"    column="thermocouple_id"    />
+        <result property="thermocoupleName"    column="thermocouple_name"    />
+        <result property="thermocoupleLocation"    column="thermocouple_location"    />
+        <result property="electrolyticCellId"    column="electrolytic_cell_id"    />
+        <result property="electrolyticCellName"    column="electrolytic_cell_name"    />
+        <result property="workshopId"    column="workshop_id"    />
+        <result property="workshopName"    column="workshop_name"    />
+        <result property="factoryId"    column="factory_id"    />
+        <result property="factoryName"    column="factory_name"    />
+    </resultMap>
+
+    <sql id="selectFacDeviceMetaTemperVo">
+        select temper_id, Temp, acquisition_time, device_id, device_name, thermocouple_id, thermocouple_name,thermocouple_location, electrolytic_cell_id, electrolytic_cell_name, workshop_id, workshop_name, factory_id, factory_name from fac_device_meta_temper
+    </sql>
+
+    <sql id="selectFacDeviceMetaTemperHistoryVo">
+        select temper_id, Temp, acquisition_time, device_id, device_name, thermocouple_id, thermocouple_name,thermocouple_location, electrolytic_cell_id, electrolytic_cell_name, workshop_id, workshop_name, factory_id, factory_name from fac_device_meta_temper_history
+    </sql>
+
+
+
+    <select id="selectFacDeviceMetaTemperList" parameterType="FacDeviceMetaTemper" resultMap="FacDeviceMetaTemperResult">
+        <include refid="selectFacDeviceMetaTemperVo"/>
+        <where>
+            <if test="temp != null "> and Temp = #{temp}</if>
+            <if test="params.beginAcquisitionTime != null and params.beginAcquisitionTime != '' and params.endAcquisitionTime != null and params.endAcquisitionTime != ''"> and acquisition_time between #{params.beginAcquisitionTime} and #{params.endAcquisitionTime}</if>
+            <if test="thermocoupleId != null  and thermocoupleId != ''"> and thermocouple_id = #{thermocoupleId}</if>
+            <if test="thermocoupleName != null  and thermocoupleName != ''"> and thermocouple_name like concat('%', #{thermocoupleName}, '%')</if>
+            <if test="thermocoupleLocation != null  and thermocoupleLocation != ''"> and thermocouple_location = #{thermocoupleLocation}</if>
+            <if test="deviceId != null  and deviceId != ''"> and device_id = #{deviceId}</if>
+            <if test="deviceName != null  and deviceName != ''"> and device_name like concat('%', #{deviceName}, '%')</if>
+            <if test="electrolyticCellId != null "> and electrolytic_cell_id = #{electrolyticCellId}</if>
+            <if test="electrolyticCellName != null  and electrolyticCellName != ''"> and electrolytic_cell_name like concat('%', #{electrolyticCellName}, '%')</if>
+            <if test="workshopId != null "> and workshop_id = #{workshopId}</if>
+            <if test="workshopName != null  and workshopName != ''"> and workshop_name like concat('%', #{workshopName}, '%')</if>
+            <if test="factoryId != null "> and factory_id = #{factoryId}</if>
+            <if test="factoryName != null  and factoryName != ''"> and factory_name like concat('%', #{factoryName}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectFacDeviceMetaTemper_history_List" parameterType="FacDeviceMetaTemper" resultMap="FacDeviceMetaTemperResult">
+        <include refid="selectFacDeviceMetaTemperHistoryVo"/>
+        <where>
+            <if test="temp != null "> and Temp = #{temp}</if>
+            <if test="params.beginAcquisitionTime != null and params.beginAcquisitionTime != '' and params.endAcquisitionTime != null and params.endAcquisitionTime != ''"> and acquisition_time between #{params.beginAcquisitionTime} and #{params.endAcquisitionTime}</if>
+            <if test="thermocoupleId != null  and thermocoupleId != ''"> and thermocouple_id = #{thermocoupleId}</if>
+            <if test="thermocoupleName != null  and thermocoupleName != ''"> and thermocouple_name like concat('%', #{thermocoupleName}, '%')</if>
+            <if test="thermocoupleLocation != null  and thermocoupleLocation != ''"> and thermocouple_location = #{thermocoupleLocation}</if>
+            <if test="deviceId != null  and deviceId != ''"> and device_id = #{deviceId}</if>
+            <if test="deviceName != null  and deviceName != ''"> and device_name like concat('%', #{deviceName}, '%')</if>
+            <if test="electrolyticCellId != null "> and electrolytic_cell_id = #{electrolyticCellId}</if>
+            <if test="electrolyticCellName != null  and electrolyticCellName != ''"> and electrolytic_cell_name like concat('%', #{electrolyticCellName}, '%')</if>
+            <if test="workshopId != null "> and workshop_id = #{workshopId}</if>
+            <if test="workshopName != null  and workshopName != ''"> and workshop_name like concat('%', #{workshopName}, '%')</if>
+            <if test="factoryId != null "> and factory_id = #{factoryId}</if>
+            <if test="factoryName != null  and factoryName != ''"> and factory_name like concat('%', #{factoryName}, '%')</if>
+        </where>
+    </select>
+
+
+    <select id="selectFacDeviceMetaTemperByTemperId" parameterType="Long" resultMap="FacDeviceMetaTemperResult">
+        <include refid="selectFacDeviceMetaTemperVo"/>
+        where temper_id = #{temperId}
+    </select>
+        
+    <insert id="insertFacDeviceMetaTemper" parameterType="FacDeviceMetaTemper" useGeneratedKeys="true" keyProperty="temperId">
+        insert into fac_device_meta_temper
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="temp != null">Temp,</if>
+            <if test="acquisitionTime != null">acquisition_time,</if>
+            <if test="deviceId != null">device_id,</if>
+            <if test="deviceName != null">device_name,</if>
+            <if test="thermocoupleId != null">thermocouple_id,</if>
+            <if test="thermocoupleName != null">thermocouple_name,</if>
+            <if test="thermocoupleLocation != null">thermocouple_location,</if>
+
+            <if test="electrolyticCellId != null">electrolytic_cell_id,</if>
+            <if test="electrolyticCellName != null">electrolytic_cell_name,</if>
+            <if test="workshopId != null">workshop_id,</if>
+            <if test="workshopName != null">workshop_name,</if>
+            <if test="factoryId != null">factory_id,</if>
+            <if test="factoryName != null">factory_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="temp != null">#{temp},</if>
+            <if test="acquisitionTime != null">#{acquisitionTime},</if>
+            <if test="deviceId != null">#{deviceId},</if>
+            <if test="deviceName != null">#{deviceName},</if>
+            <if test="thermocoupleId != null">#{thermocoupleId},</if>
+            <if test="thermocoupleName != null">#{thermocoupleName},</if>
+            <if test="thermocoupleLocation != null">#{thermocoupleLocation},</if>
+
+            <if test="electrolyticCellId != null">#{electrolyticCellId},</if>
+            <if test="electrolyticCellName != null">#{electrolyticCellName},</if>
+            <if test="workshopId != null">#{workshopId},</if>
+            <if test="workshopName != null">#{workshopName},</if>
+            <if test="factoryId != null">#{factoryId},</if>
+            <if test="factoryName != null">#{factoryName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFacDeviceMetaTemper" parameterType="FacDeviceMetaTemper">
+        update fac_device_meta_temper
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="temp != null">Temp = #{temp},</if>
+            <if test="acquisitionTime != null">acquisition_time = #{acquisitionTime},</if>
+            <if test="deviceId != null">device_id = #{deviceId},</if>
+            <if test="deviceName != null">device_name = #{deviceName},</if>
+            <if test="thermocoupleId != null">thermocouple_id = #{thermocoupleId},</if>
+            <if test="thermocoupleName != null">thermocouple_name = #{thermocoupleName},</if>
+            <if test="electrolyticCellId != null">electrolytic_cell_id = #{electrolyticCellId},</if>
+            <if test="electrolyticCellName != null">electrolytic_cell_name = #{electrolyticCellName},</if>
+            <if test="workshopId != null">workshop_id = #{workshopId},</if>
+            <if test="workshopName != null">workshop_name = #{workshopName},</if>
+            <if test="factoryId != null">factory_id = #{factoryId},</if>
+            <if test="factoryName != null">factory_name = #{factoryName},</if>
+        </trim>
+        where temper_id = #{temperId}
+    </update>
+
+    <delete id="deleteFacDeviceMetaTemperByTemperId" parameterType="Long">
+        delete from fac_device_meta_temper where temper_id = #{temperId}
+    </delete>
+
+    <delete id="deleteFacDeviceMetaTemperByTemperIds" parameterType="String">
+        delete from fac_device_meta_temper where temper_id in 
+        <foreach item="temperId" collection="array" open="(" separator="," close=")">
+            #{temperId}
+        </foreach>
+    </delete>
+</mapper>

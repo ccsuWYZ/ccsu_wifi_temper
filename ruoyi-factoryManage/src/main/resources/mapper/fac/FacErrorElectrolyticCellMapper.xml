@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fac.mapper.FacErrorElectrolyticCellMapper">
+    
+    <resultMap type="FacErrorElectrolyticCell" id="FacErrorElectrolyticCellResult">
+        <result property="id"    column="id"    />
+        <result property="happenTime"    column="happen_time"    />
+        <result property="electrolyticCellId"    column="electrolytic_cell_id"    />
+        <result property="electrolyticCellName"    column="electrolytic_cell_name"    />
+        <result property="electrolyticCellLocation"    column="electrolytic_cell_location"    />
+        <result property="workshopId"    column="workshop_id"    />
+        <result property="workshopName"    column="workshop_name"    />
+        <result property="factoryId"    column="factory_id"    />
+        <result property="factoryName"    column="factory_name"    />
+    </resultMap>
+
+    <sql id="selectFacErrorElectrolyticCellVo">
+        select id, happen_time, electrolytic_cell_id, electrolytic_cell_name, electrolytic_cell_location, workshop_id, workshop_name, factory_id, factory_name from fac_error_electrolytic_cell
+    </sql>
+
+    <select id="selectFacErrorElectrolyticCellList" parameterType="FacErrorElectrolyticCell" resultMap="FacErrorElectrolyticCellResult">
+        <include refid="selectFacErrorElectrolyticCellVo"/>
+        <where>  
+            <if test="happenTime != null "> and happen_time = #{happenTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectFacErrorElectrolyticCellById" parameterType="Long" resultMap="FacErrorElectrolyticCellResult">
+        <include refid="selectFacErrorElectrolyticCellVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertFacErrorElectrolyticCell" parameterType="FacErrorElectrolyticCell" useGeneratedKeys="true" keyProperty="id">
+        insert into fac_error_electrolytic_cell
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="happenTime != null">happen_time,</if>
+            <if test="electrolyticCellId != null">electrolytic_cell_id,</if>
+            <if test="electrolyticCellName != null">electrolytic_cell_name,</if>
+            <if test="electrolyticCellLocation != null">electrolytic_cell_location,</if>
+            <if test="workshopId != null">workshop_id,</if>
+            <if test="workshopName != null">workshop_name,</if>
+            <if test="factoryId != null">factory_id,</if>
+            <if test="factoryName != null">factory_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="happenTime != null">#{happenTime},</if>
+            <if test="electrolyticCellId != null">#{electrolyticCellId},</if>
+            <if test="electrolyticCellName != null">#{electrolyticCellName},</if>
+            <if test="electrolyticCellLocation != null">#{electrolyticCellLocation},</if>
+            <if test="workshopId != null">#{workshopId},</if>
+            <if test="workshopName != null">#{workshopName},</if>
+            <if test="factoryId != null">#{factoryId},</if>
+            <if test="factoryName != null">#{factoryName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFacErrorElectrolyticCell" parameterType="FacErrorElectrolyticCell">
+        update fac_error_electrolytic_cell
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="happenTime != null">happen_time = #{happenTime},</if>
+            <if test="electrolyticCellId != null">electrolytic_cell_id = #{electrolyticCellId},</if>
+            <if test="electrolyticCellName != null">electrolytic_cell_name = #{electrolyticCellName},</if>
+            <if test="electrolyticCellLocation != null">electrolytic_cell_location = #{electrolyticCellLocation},</if>
+            <if test="workshopId != null">workshop_id = #{workshopId},</if>
+            <if test="workshopName != null">workshop_name = #{workshopName},</if>
+            <if test="factoryId != null">factory_id = #{factoryId},</if>
+            <if test="factoryName != null">factory_name = #{factoryName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFacErrorElectrolyticCellById" parameterType="Long">
+        delete from fac_error_electrolytic_cell where id = #{id}
+    </delete>
+
+    <delete id="deleteFacErrorElectrolyticCellByIds" parameterType="String">
+        delete from fac_error_electrolytic_cell where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

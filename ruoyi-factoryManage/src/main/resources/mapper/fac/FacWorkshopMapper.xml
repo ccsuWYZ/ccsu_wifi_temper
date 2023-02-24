@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fac.mapper.FacWorkshopMapper">
+    
+    <resultMap type="FacWorkshop" id="FacWorkshopResult">
+        <result property="workshopId"    column="workshop_id"    />
+        <result property="workshopName"    column="workshop_name"    />
+        <result property="workshopLocation"    column="workshop_location"    />
+        <result property="factoryId"    column="factory_id"    />
+    </resultMap>
+
+    <resultMap id="FacWorkshopFacElectrolyticCellResult" type="FacWorkshop" extends="FacWorkshopResult">
+        <collection property="facElectrolyticCellList" notNullColumn="sub_electrolyticCell_id" javaType="java.util.List" resultMap="FacElectrolyticCellResult" />
+    </resultMap>
+
+    <resultMap type="FacElectrolyticCell" id="FacElectrolyticCellResult">
+        <result property="electrolyticcellId"    column="sub_electrolyticCell_id"    />
+        <result property="electrolyticcellName"    column="sub_electrolyticCell_name"    />
+        <result property="electrolyticcellLocation"    column="sub_electrolyticCell_location"    />
+        <result property="workshopId"    column="sub_workshop_id"    />
+    </resultMap>
+
+    <sql id="selectFacWorkshopVo">
+        select workshop_id, workshop_name, workshop_location, factory_id from fac_workshop
+    </sql>
+
+    <select id="selectFacWorkshopList" parameterType="FacWorkshop" resultMap="FacWorkshopResult">
+        <include refid="selectFacWorkshopVo"/>
+        <where>  
+            <if test="workshopName != null  and workshopName != ''"> and workshop_name like concat('%', #{workshopName}, '%')</if>
+            <if test="workshopLocation != null  and workshopLocation != ''"> and workshop_location = #{workshopLocation}</if>
+            <if test="factoryId != null "> and factory_id = #{factoryId}</if>
+        </where>
+    </select>
+    
+    <select id="selectFacWorkshopByWorkshopId" parameterType="Long" resultMap="FacWorkshopFacElectrolyticCellResult">
+        select a.workshop_id, a.workshop_name, a.workshop_location, a.factory_id,
+ b.electrolyticCell_id as sub_electrolyticCell_id, b.electrolyticCell_name as sub_electrolyticCell_name, b.electrolyticCell_location as sub_electrolyticCell_location, b.workshop_id as sub_workshop_id
+        from fac_workshop a
+        left join fac_electrolytic_cell b on b.workshop_id = a.workshop_id
+        where a.workshop_id = #{workshopId}
+    </select>
+        
+    <insert id="insertFacWorkshop" parameterType="FacWorkshop" useGeneratedKeys="true" keyProperty="workshopId">
+        insert into fac_workshop
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="workshopName != null">workshop_name,</if>
+            <if test="workshopLocation != null">workshop_location,</if>
+            <if test="factoryId != null">factory_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="workshopName != null">#{workshopName},</if>
+            <if test="workshopLocation != null">#{workshopLocation},</if>
+            <if test="factoryId != null">#{factoryId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFacWorkshop" parameterType="FacWorkshop">
+        update fac_workshop
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="workshopName != null">workshop_name = #{workshopName},</if>
+            <if test="workshopLocation != null">workshop_location = #{workshopLocation},</if>
+            <if test="factoryId != null">factory_id = #{factoryId},</if>
+        </trim>
+        where workshop_id = #{workshopId}
+    </update>
+
+    <delete id="deleteFacWorkshopByWorkshopId" parameterType="Long">
+        delete from fac_workshop where workshop_id = #{workshopId}
+    </delete>
+
+    <delete id="deleteFacWorkshopByWorkshopIds" parameterType="String">
+        delete from fac_workshop where workshop_id in 
+        <foreach item="workshopId" collection="array" open="(" separator="," close=")">
+            #{workshopId}
+        </foreach>
+    </delete>
+    
+    <delete id="deleteFacElectrolyticCellByWorkshopIds" parameterType="String">
+        delete from fac_electrolytic_cell where workshop_id in 
+        <foreach item="workshopId" collection="array" open="(" separator="," close=")">
+            #{workshopId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteFacElectrolyticCellByWorkshopId" parameterType="Long">
+        delete from fac_electrolytic_cell where workshop_id = #{workshopId}
+    </delete>
+
+    <insert id="batchFacElectrolyticCell">
+        insert into fac_electrolytic_cell( electrolyticCell_id, electrolyticCell_name, electrolyticCell_location, workshop_id) values
+		<foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.electrolyticcellId}, #{item.electrolyticcellName}, #{item.electrolyticcellLocation}, #{item.workshopId})
+        </foreach>
+    </insert>
+</mapper>

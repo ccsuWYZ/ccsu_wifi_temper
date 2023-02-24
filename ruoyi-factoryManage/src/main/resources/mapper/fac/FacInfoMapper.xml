@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fac.mapper.FacInfoMapper">
+    
+    <resultMap type="FacInfo" id="FacInfoResult">
+        <result property="factoryId"    column="factory_id"    />
+        <result property="factoryName"    column="factory_name"    />
+        <result property="factoryLocation"    column="factory_location"    />
+    </resultMap>
+
+    <resultMap id="FacInfoFacWorkshopResult" type="FacInfo" extends="FacInfoResult">
+        <collection property="facWorkshopList" notNullColumn="sub_workshop_id" javaType="java.util.List" resultMap="FacWorkshopResult" />
+    </resultMap>
+
+    <resultMap type="FacWorkshop" id="FacWorkshopResult">
+        <result property="workshopId"    column="sub_workshop_id"    />
+        <result property="workshopName"    column="sub_workshop_name"    />
+        <result property="workshopLocation"    column="sub_workshop_location"    />
+        <result property="factoryId"    column="sub_factory_id"    />
+    </resultMap>
+
+    <sql id="selectFacInfoVo">
+        select factory_id, factory_name, factory_location from fac_info
+    </sql>
+
+    <select id="selectFacInfoList" parameterType="FacInfo" resultMap="FacInfoResult">
+        <include refid="selectFacInfoVo"/>
+        <where>  
+            <if test="factoryName != null  and factoryName != ''"> and factory_name like concat('%', #{factoryName}, '%')</if>
+            <if test="factoryLocation != null  and factoryLocation != ''"> and factory_location = #{factoryLocation}</if>
+        </where>
+    </select>
+    
+    <select id="selectFacInfoByFactoryId" parameterType="Long" resultMap="FacInfoFacWorkshopResult">
+        select a.factory_id, a.factory_name, a.factory_location,
+ b.workshop_id as sub_workshop_id, b.workshop_name as sub_workshop_name, b.workshop_location as sub_workshop_location, b.factory_id as sub_factory_id
+        from fac_info a
+        left join fac_workshop b on b.factory_id = a.factory_id
+        where a.factory_id = #{factoryId}
+    </select>
+        
+    <insert id="insertFacInfo" parameterType="FacInfo" useGeneratedKeys="true" keyProperty="factoryId">
+        insert into fac_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="factoryName != null">factory_name,</if>
+            <if test="factoryLocation != null">factory_location,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="factoryName != null">#{factoryName},</if>
+            <if test="factoryLocation != null">#{factoryLocation},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFacInfo" parameterType="FacInfo">
+        update fac_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="factoryName != null">factory_name = #{factoryName},</if>
+            <if test="factoryLocation != null">factory_location = #{factoryLocation},</if>
+        </trim>
+        where factory_id = #{factoryId}
+    </update>
+
+    <delete id="deleteFacInfoByFactoryId" parameterType="Long">
+        delete from fac_info where factory_id = #{factoryId}
+    </delete>
+
+    <delete id="deleteFacInfoByFactoryIds" parameterType="String">
+        delete from fac_info where factory_id in 
+        <foreach item="factoryId" collection="array" open="(" separator="," close=")">
+            #{factoryId}
+        </foreach>
+    </delete>
+    
+    <delete id="deleteFacWorkshopByFactoryIds" parameterType="String">
+        delete from fac_workshop where factory_id in 
+        <foreach item="factoryId" collection="array" open="(" separator="," close=")">
+            #{factoryId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteFacWorkshopByFactoryId" parameterType="Long">
+        delete from fac_workshop where factory_id = #{factoryId}
+    </delete>
+
+    <insert id="batchFacWorkshop">
+        insert into fac_workshop( workshop_id, workshop_name, workshop_location, factory_id) values
+		<foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.workshopId}, #{item.workshopName}, #{item.workshopLocation}, #{item.factoryId})
+        </foreach>
+    </insert>
+</mapper>

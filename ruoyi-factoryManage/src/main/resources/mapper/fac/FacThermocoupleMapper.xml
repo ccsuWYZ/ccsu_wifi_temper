@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fac.mapper.FacThermocoupleMapper">
+    
+    <resultMap type="FacThermocouple" id="FacThermocoupleResult">
+        <result property="thermocoupleId"    column="thermocouple_id"    />
+        <result property="thermocoupleName"    column="thermocouple_name"    />
+        <result property="thermocoupleLocation"    column="thermocouple_location"    />
+        <result property="endDeviceId"    column="end_device_id"    />
+    </resultMap>
+
+    <sql id="selectFacThermocoupleVo">
+        select thermocouple_id, thermocouple_name, thermocouple_location, end_device_id from fac_thermocouple
+    </sql>
+
+    <select id="selectFacThermocoupleList" parameterType="FacThermocouple" resultMap="FacThermocoupleResult">
+        <include refid="selectFacThermocoupleVo"/>
+        <where>  
+            <if test="thermocoupleName != null  and thermocoupleName != ''"> and thermocouple_name like concat('%', #{thermocoupleName}, '%')</if>
+            <if test="thermocoupleLocation != null  and thermocoupleLocation != ''"> and thermocouple_location = #{thermocoupleLocation}</if>
+            <if test="endDeviceId != null  and endDeviceId != ''"> and end_device_id = #{endDeviceId}</if>
+        </where>
+    </select>
+    
+    <select id="selectFacThermocoupleByThermocoupleId" parameterType="String" resultMap="FacThermocoupleResult">
+        <include refid="selectFacThermocoupleVo"/>
+        where thermocouple_id = #{thermocoupleId}
+    </select>
+
+
+    <select id="selectFacThermocoupleByEndDeviceId" parameterType="String" resultMap="FacThermocoupleResult">
+        <include refid="selectFacThermocoupleVo"/>
+        where end_device_id = #{endDeviceId}
+    </select>
+
+    <insert id="insertFacThermocouple" parameterType="FacThermocouple">
+        insert into fac_thermocouple
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="thermocoupleId != null">thermocouple_id,</if>
+            <if test="thermocoupleName != null">thermocouple_name,</if>
+            <if test="thermocoupleLocation != null">thermocouple_location,</if>
+            <if test="endDeviceId != null">end_device_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="thermocoupleId != null">#{thermocoupleId},</if>
+            <if test="thermocoupleName != null">#{thermocoupleName},</if>
+            <if test="thermocoupleLocation != null">#{thermocoupleLocation},</if>
+            <if test="endDeviceId != null">#{endDeviceId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFacThermocouple" parameterType="FacThermocouple">
+        update fac_thermocouple
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="thermocoupleName != null">thermocouple_name = #{thermocoupleName},</if>
+            <if test="thermocoupleLocation != null">thermocouple_location = #{thermocoupleLocation},</if>
+            <if test="endDeviceId != null">end_device_id = #{endDeviceId},</if>
+        </trim>
+        where thermocouple_id = #{thermocoupleId}
+    </update>
+
+    <delete id="deleteFacThermocoupleByThermocoupleId" parameterType="String">
+        delete from fac_thermocouple where thermocouple_id = #{thermocoupleId}
+    </delete>
+
+    <delete id="deleteFacThermocoupleByThermocoupleIds" parameterType="String">
+        delete from fac_thermocouple where thermocouple_id in 
+        <foreach item="thermocoupleId" collection="array" open="(" separator="," close=")">
+            #{thermocoupleId}
+        </foreach>
+    </delete>
+</mapper>
