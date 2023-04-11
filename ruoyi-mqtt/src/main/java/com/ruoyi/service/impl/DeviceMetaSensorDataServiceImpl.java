@@ -28,7 +28,7 @@ public class DeviceMetaSensorDataServiceImpl implements DeviceMetaSensorDataServ
     private RedisCache redisCache;
 
     @Override
-    public int insertDeviceMetaTemper(Map<String, Object> mqttMessage) {
+    public void insertDeviceMetaTemper(Map<String, Object> mqttMessage) {
 
         Long factory_id;
         String factory_name;
@@ -81,11 +81,10 @@ public class DeviceMetaSensorDataServiceImpl implements DeviceMetaSensorDataServ
             if (Temp == null) {
                 continue;
             }
+
             thermocouple_location = facThermocoupleList.get(i).getThermocoupleLocation();
+
             thermocouple_name = facThermocoupleList.get(i).getThermocoupleName();
-
-//            FacDeviceMetaTemper facDeviceMetaTemper=new FacDeviceMetaTemper(Temp,device_id,device_name,thermocouple_id,thermocouple_name,thermocouple_location,ele_cell_id,ele_cell_name,workshop_id,workshop_name,factory_id,factory_name);
-
 
             FacDeviceMetaSensorData temperData = new FacDeviceMetaSensorData(Temp, "temper", thermocouple_id, thermocouple_name, thermocouple_location, device_id, device_name, ele_cell_id, ele_cell_name, workshop_id, workshop_name, factory_id, factory_name);
 
@@ -95,7 +94,6 @@ public class DeviceMetaSensorDataServiceImpl implements DeviceMetaSensorDataServ
         }
         FacDeviceMetaSensorData voltageData = new FacDeviceMetaSensorData(voltage, "voltage", device_id, device_name, ele_cell_id, ele_cell_name, workshop_id, workshop_name, factory_id, factory_name);
         facDeviceMetaSensorDataMapper.insertFacDeviceMetaSensorData(voltageData);
-        return 0;
 
     }
 }

@@ -51,7 +51,6 @@ public class FacDeviceMetaSensorDataServiceImpl implements IFacDeviceMetaSensorD
     @Override
     public List<FacDeviceMetaSensorData> selectFacDeviceMetaSensorDataList(FacDeviceMetaSensorData facDeviceMetaSensorData)
     {
-//        if ("temper".equals(facDeviceMetaSensorData.getType())||"voltage".equals(facDeviceMetaSensorData.getType())){
             String beginTime = request.getParameter("params[beginAcquisitionTime]");
             String endTime = request.getParameter("params[endAcquisitionTime]");
             if (beginTime == null && endTime == null) {//传入的时间为空，默认取全部的现在的数据
@@ -84,9 +83,6 @@ public class FacDeviceMetaSensorDataServiceImpl implements IFacDeviceMetaSensorD
 
                 }
             }
-//        }else {
-//            return facDeviceMetaSensorDataMapper.selectFacDeviceMetaSensorDataList(facDeviceMetaSensorData);
-//        }
         return null;
     }
 

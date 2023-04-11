@@ -9,38 +9,33 @@ import java.util.Map;
  * @description
  */
 public class MqttPlayLoadToString {
-    //把传过来的消息负载转为16进制
+
     public static String bytes_String16(byte[] b) {
-        char[] _16 = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
         StringBuilder sb = new StringBuilder();
-        for(int i = 0 ; i<b.length;i++) {
-            sb.append(_16[b[i]>>4&0xf])
-                    .append(_16[b[i]&0xf]);
+        for (byte value : b) {
+            sb.append(String.format("%02X", value));
         }
-        String TransFerResult=sb.toString();
-//        System.out.println(TransFerResult);
-        String FinalResult="";
-        for (int i = 0; i < TransFerResult.length(); i++) {
-            if(i%2==0&&i!=0){
-                FinalResult+=" ";
-                FinalResult+=TransFerResult.charAt(i);
-            }else{
-                FinalResult+=TransFerResult.charAt(i);
-            }
-        }
-        return FinalResult;
+        return sb.toString().replaceAll("..(?!$)", "$0 ");
     }
+
+
+    //解析的数据格式：
+    // {1=2, 2=2, 3=2, device_id=48484853, 4=2, voltage=0.034}，
+    // 1，2，3，4分别代表四个温度，voltage是电压，device_id是设备的唯一标识
+
     public static Map<String,Object> hexToInt(String hex){
         //按空格把传进来的字符串分割成字符串数组
         String [] s;
-//        System.out.println(hex);
         //初始化一个map
         Map<String,Object> stringObjectMap=new HashMap<>();
+
         String temperString="";
+
         s=hex.split(" ");
+
         for (int i = 0; i < s.length; i++) {
             if(i<=3){//存mac地址
-                temperString+=String.valueOf(Integer.parseInt(s[i],16));
+                temperString+=String.valueOf(Integer.parseInt(s[i],16));//把十六进制的数转10进制
                 if(i==3){
                     stringObjectMap.put("device_id",temperString);
 
@@ -48,38 +43,38 @@ public class MqttPlayLoadToString {
                 }
 
             }else if(i>3&&i<=8){//存第一个温度
-                temperString+=String.valueOf(Integer.parseInt(s[i],16)-48);
+                temperString+=String.valueOf(Integer.parseInt(s[i],16)-48);//把十六进制的数转10进制，但是只得到了各个数位上的数值，需要再乘对应的数
 
                 if(i==8)  {
-                    stringObjectMap.put("1",formateInterger(temperString)) ;
+                    stringObjectMap.put("1",  Integer.parseInt(temperString,10)) ;
                     temperString="";
                 }
 
             } else if (i>8&&i<=13) {
                 temperString+=String.valueOf(Integer.parseInt(s[i],16)-48);
                 if(i==13)  {
-                    stringObjectMap.put("2",formateInterger(temperString)) ;
+                    stringObjectMap.put("2",Integer.parseInt(temperString,10)) ;
                     temperString="";
                 }
 
             } else if (i>13&&i<=18) {
                 temperString+=String.valueOf(Integer.parseInt(s[i],16)-48);
                 if(i==18)  {
-                    stringObjectMap.put("3",formateInterger(temperString)) ;
+                    stringObjectMap.put("3",Integer.parseInt(temperString,10)) ;
                     temperString="";
                 }
 
             } else if (i>18&&i<=23) {
                 temperString+=String.valueOf(Integer.parseInt(s[i],16)-48);
                 if(i==23){
-                    stringObjectMap.put("4",formateInterger(temperString)) ;
+                    stringObjectMap.put("4",Integer.parseInt(temperString,10)) ;
                     temperString="";
                 }
 
             }else if (i>23&&i<=28) {
                 temperString+=String.valueOf(Integer.parseInt(s[i],16)-48);
                 if(i==28){
-                    stringObjectMap.put("voltage",formateInterger(temperString)/1000.0) ;
+                    stringObjectMap.put("voltage",Integer.parseInt(temperString,10)/1000.0) ;
                     temperString="";
                 }
 
@@ -87,15 +82,5 @@ public class MqttPlayLoadToString {
         }
 
         return stringObjectMap;
-    }
-
-    public static int formateInterger(String num){
-        int res=0;
-        res+=Integer.parseInt(String.valueOf(num.charAt(4)))*1;
-        res+=Integer.parseInt(String.valueOf(num.charAt(3)))*10;
-        res+=Integer.parseInt(String.valueOf(num.charAt(2)))*100;
-        res+=Integer.parseInt(String.valueOf(num.charAt(1)))*1000;
-        res+=Integer.parseInt(String.valueOf(num.charAt(0)))*10000;
-        return res;
     }
 }

@@ -4,11 +4,11 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.cj.jdbc.Driver
     druid:
-      # 主库数据源119.29.2.61
+      # 主库数据源,xxxx是数据库ip
       master:
-        url: jdbc:mysql://119.29.2.61:3306/ruoyi?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-        username: zigbee
-        password: zigBee@54123
+        url: jdbc:mysql://xxxx/ruoyi?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        username:
+        password:
       # 从库数据源
       slave:
         # 从数据源开关/默认关闭
@@ -44,7 +44,7 @@ spring:
         url-pattern: /druid/*
         # 控制台管理用户名和密码
         login-username: ruoyi
-        login-password: 123456
+        login-password: ruoyi123456
       filter:
         stat:
           enabled: true

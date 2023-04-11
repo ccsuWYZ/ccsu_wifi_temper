@@ -4,6 +4,6 @@ import java.util.Map;
 
 public interface DeviceMetaSensorDataService {
 
-    public int insertDeviceMetaTemper(Map<String,Object> map);
+    public void insertDeviceMetaTemper(Map<String,Object> map);
 
 }

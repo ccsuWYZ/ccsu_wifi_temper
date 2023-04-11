@@ -79,7 +79,7 @@ DeviceMetaSensorDataService deviceMetaSensorDataService=SpringUtils.getBean(Devi
                 //把传来的mqtt消息负载转成16进制加空格
 
                 String m= MqttPlayLoadToString.bytes_String16(mqttMessage.getPayload());
-//                System.out.println(m);
+
                 //得到的最终结果
                 Map<String,Object> stringObjectMap= MqttPlayLoadToString.hexToInt(m);
                 System.out.println(stringObjectMap);
@@ -91,11 +91,7 @@ DeviceMetaSensorDataService deviceMetaSensorDataService=SpringUtils.getBean(Devi
 //            insertPushAlarm(maps);
         }
     }
-    /**
-     * byte[] 转16进制字符串
-     * @param b
-     * @return
-     */
+
 
 
     /**
